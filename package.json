@@ -1,0 +1,33 @@
+{
+  "name": "bookshelf-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "concurrently --kill-others \"npm run serve\" \"npm run api-server\"",
+    "serve": "vue-cli-service serve --open",
+    "api-server": "node server.js",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
+  },
+  "dependencies": {
+    "register-service-worker": "^1.0.0",
+    "vue": "^2.5.16",
+    "vue-class-component": "^6.0.0",
+    "vue-property-decorator": "^6.0.0",
+    "vue-router": "^3.0.1"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-pwa": "^3.0.0-beta.11",
+    "@vue/cli-plugin-typescript": "^3.0.0-beta.11",
+    "@vue/cli-service": "^3.0.0-beta.11",
+    "concurrently": "^3.5.1",
+    "node-sass": "^4.9.0",
+    "sass-loader": "^7.0.1",
+    "vue-template-compiler": "^2.5.16"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ]
+}
