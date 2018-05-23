@@ -23,12 +23,13 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
+import config from '@/config';
 
 @Component
 export default class Bookshelf extends Vue {
   public books: object[] = [];
 
-  public parseBooks(rawBooks: any) {
+  public formatBooks(rawBooks: any) {
     this.books = rawBooks.map((rawBook: any) => {
       let book: any = {
         id: rawBook.id,
@@ -42,10 +43,32 @@ export default class Bookshelf extends Vue {
     });
   }
 
-  public mounted() {
-    fetch('http://localhost:3000/chimera/api/interface/v2/scenario/23c9eee3cff64082978086cecc3dd29e/instance/b229d88eb0f7409db6776fcf89b94f66/dataobject').then((response: any) => {
+  private requestScenarioDataobjects() {
+    console.log('called scenario DO');
+    let url = config.api.chimera.base + 'interface/v2/scenario/' + config.scenario.id + '/instance';
+
+    fetch(url).then((response: any) => {
       return response.json();
-    }).then(this.parseBooks);
+    }).then((instances: any) => {
+      instances.forEach((instance: any) => {
+        this.requestInstanceDataobjects(instance.id);
+      });
+    });
+  }
+
+  private requestInstanceDataobjects(instanceId: string) {
+    console.log('called instance DO' + instanceId);
+    let url = config.api.chimera.base + 'interface/v2/scenario/' + config.scenario.id + '/instance/' + instanceId + '/dataobject';
+    
+    fetch(url).then((response: any) => {
+      return response.json();
+    }).then(this.formatBooks);
+  }
+
+
+
+  public mounted() {
+    this.requestScenarioDataobjects();
   }
 }
 </script>
