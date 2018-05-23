@@ -12,7 +12,9 @@ server.use('/chimera/api', function(req, res) {
   var url = 'https://bpt-lab.org/bpt-bookshelf/chimera/api' + req.url;
   console.log(req.url);
   var response = request.get({uri: url, json: req.body});
-
+  res.setHeader('Content-Type', 'application/json');
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Headers", "X-Requested-With");
   req.pipe(response).pipe(res);
 });
 
