@@ -6,4 +6,9 @@ export default class Utils {
         }, []);
     }
 
+    public static fetchJson(url: string): Promise<any> {
+        return fetch(url).then((response: Response): Promise<Response> => {
+            return response.json();
+        });
+    }
 }
