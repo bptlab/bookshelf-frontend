@@ -1,10 +1,6 @@
 <template>
   <div class="booklist">
-    <form class="searchform">
-      <fieldset class="uk-fieldset">
-        <input v-on:keyup="searchBooks" type="text" id="searchbar" class="uk-input" placeholder="Search Books">
-      </fieldset>
-    </form>
+    <input v-on:keyup="searchBooks" type="text" id="searchbar" class="uk-input" placeholder="Search Books">
     <table class="uk-table uk-table-divider">
       <thead>
         <tr>
