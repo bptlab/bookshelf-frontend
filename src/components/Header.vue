@@ -11,7 +11,7 @@
                             <router-link to="/wish">Wish</router-link>
                         </li>
                         <li>
-                            <router-link to="/admin">Admin</router-link>
+                            <router-link v-if="loggedIn" to="/admin">Admin</router-link>
                         </li>
                     </ul>
                 </div>
@@ -36,7 +36,7 @@ import Authentification from '@/apis/Authentification';
 @Component
 export default class Header extends Vue {
   // region public members
-  public loggedIn: boolean;
+  public loggedIn: boolean = false;
   // endregion
 
   // region public methods
@@ -46,16 +46,15 @@ export default class Header extends Vue {
   // endregion
 
   // region constructor
-  constructor() {
-    super();
-    this.loggedIn = Authentification.loggedIn();
-    Authentification.onChange = (loggedIn) => {
-      this.loggedIn = loggedIn;
-    };
-  }
   // endregion
 
   // region private methods
+  private mounted() {
+    this.loggedIn = Authentification.loggedIn();
+    Authentification.onChange = (loggedIn) => {
+        this.loggedIn = loggedIn;
+    };
+  }
   // endregion
 }
 </script>
