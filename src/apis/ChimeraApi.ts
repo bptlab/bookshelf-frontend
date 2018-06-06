@@ -1,6 +1,7 @@
 import Utils from '@/Utils';
 import ScenarioInstance from '@/interfaces/chimera/ScenarioInstance';
 import Dataobject from '@/interfaces/chimera/Dataobject';
+import Activity from '@/interfaces/chimera/Activity';
 import Book from '@/interfaces/Book';
 import config from '@/config';
 
@@ -14,12 +15,27 @@ export default class ChimeraApi {
         return Utils.fetchJson(url);
     }
 
+    public static getInstanceActivities(instanceId: string): Promise<Activity[]> {
+        const url: string = this.getActivitiesUrl(instanceId);
+
+        return Utils.fetchJson(url);
+    }
+
+    public static getEnabledActivities(instanceId: string): Promise<Activity[]> {
+        return this.getInstanceActivities(instanceId)
+            .then((activities: Activity[]): Activity[] => {
+                return activities.filter((activity: Activity) => {
+                    return activity.state === 'READY';
+                });
+            });
+    }
+
     public static getScenarioDataobjects(): Promise<Dataobject[]> {
         const url: string = this.getScenarioInstancesUrl();
 
         return Utils
             .fetchJson(url)
-            .then(this.getInstancesDataobjects);
+            .then(this.fetchScenarioDataobjects);
     }
 
     public static startInstance(book: Book) {
@@ -28,6 +44,47 @@ export default class ChimeraApi {
             method: 'post',
             body: JSON.stringify(book),
         });
+    }
+
+    public static getActivityOutput(instanceId: string, activityId: string) {
+        const url: string = this.getActivityOutputUrl(instanceId, activityId);
+
+        return Utils.fetchJson(url);
+    }
+
+    public static beginActivity(instanceId: string, activityId: string, dataobjectId?: string) {
+        const url: string = this.getActivityBeginUrl(instanceId, activityId);
+        const dataobjects = [ dataobjectId ];
+
+        return fetch(url, {
+            method: 'post',
+            body: JSON.stringify(dataobjects),
+        });
+    }
+
+    public static async terminateActivity(instanceId: string, activityId: string) {
+        const url: string = this.getActivityTerminateUrl(instanceId, activityId);
+        return this.getActivityOutput(instanceId, activityId)
+            .then( (dataobjects) => {
+                Object.keys(dataobjects).map((key) => {
+                    dataobjects[key] = dataobjects[key].states[0];
+                });
+
+                setTimeout(() => {
+                    fetch(url, {
+                        method: 'post',
+                        body: JSON.stringify({ transitions: JSON.stringify(dataobjects), values: '{}' }),
+                    });
+                }, 30000);
+                
+            });
+    }
+
+    public static completeActivity(instanceId: string, activityId: string, dataobjectId?: string) {
+        return this.beginActivity(instanceId, activityId, dataobjectId)
+            .then(() => {
+                this.terminateActivity(instanceId, activityId);
+            });
     }
     // endregion
 
@@ -41,16 +98,23 @@ export default class ChimeraApi {
     // endregion
 
     // region private methods
-    private static getInstancesDataobjects(instances: ScenarioInstance[]): Promise<Dataobject[]> {
-        let instaceObjects: Array<Promise<Dataobject[]>>;
+    private static fetchScenarioDataobjects(instances: ScenarioInstance[]): Promise<Dataobject[]> {
+        let scenarioObjects: Array<Promise<Dataobject[]>>;
         let dataobjects: Promise<Dataobject[]>;
 
-        instaceObjects = instances.map((instance: any) => {
-            return ChimeraApi.getInstanceDataobjects(instance.id);
+        scenarioObjects = instances.map((instance: any) => {
+            return ChimeraApi
+                .getInstanceDataobjects(instance.id)
+                .then((instanceObjects: Dataobject[]): Dataobject[] => {
+                    return instanceObjects.map((dataobject: Dataobject) => {
+                        dataobject.instanceId = instance.id;
+                        return dataobject;
+                    });
+                });
         });
 
         dataobjects = Promise
-            .all(instaceObjects)
+            .all(scenarioObjects)
             .then(Utils.mergeArrays);
         return dataobjects;
     }
@@ -61,6 +125,26 @@ export default class ChimeraApi {
 
     private static getDataobjectsUrl(instanceId: string): string {
         return this.getScenarioInstancesUrl() + instanceId + '/dataobject';
+    }
+
+    private static getActivitiesUrl(instanceId: string): string {
+        return this.getScenarioInstancesUrl() + instanceId + '/activity';
+    }
+
+    private static getActivityUrl(instanceId: string, activityId: string): string {
+        return this.getActivitiesUrl(instanceId) + 'instance/' + activityId;
+    }
+
+    private static getActivityBeginUrl(instanceId: string, activityId: string): string {
+        return this.getActivityUrl(instanceId, activityId) + '/begin';
+    }
+
+    private static getActivityTerminateUrl(instanceId: string, activityId: string): string {
+        return this.getActivityUrl(instanceId, activityId) + '/terminate';
+    }
+
+    private static getActivityOutputUrl(instanceId: string, activityId: string): string {
+        return this.getActivityUrl(instanceId, activityId) + '/output';
     }
 
     private static getInstanceStartUrl(): string {
