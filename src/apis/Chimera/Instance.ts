@@ -1,8 +1,10 @@
-import InstanceObject from '@/interfaces/chimera/InstanceObject';
+import ApiEndpoint from '@/apis/Chimera/ApiEndpoint';
+import InstanceResponse from '@/interfaces/chimera/InstanceResponse';
 import Utils from '@/Utils';
 import config from '@/config';
+import ScenarioResponse from '@/interfaces/chimera/ScenarioResponse';
 
-export default class Instance {
+export default class Instance extends ApiEndpoint {
   // region public static methods
   // endregion
 
@@ -12,7 +14,6 @@ export default class Instance {
   // region public members
 
   public scenarioId: string = '';
-  public id: string = '';
 
   // endregion
 
@@ -26,17 +27,17 @@ export default class Instance {
 
   // region constructor
 
-  constructor(scenarioId: string, id: string);
-  constructor(scenarioId: string, instanceObject: InstanceObject);
+  public constructor(scenarioId: string, id: string);
+  public constructor(scenarioId: string, instanceResponse: InstanceResponse);
 
-  constructor(scenarioId: string, instance: string | InstanceObject) {
-    this.scenarioId = scenarioId;
-
+  public constructor(scenarioId: string, instance: string | InstanceResponse) {
+    super();
     if (typeof instance === 'string') {
       this.id = instance;
     } else {
-      this.initializeInstance(instance);
+      this.initialize(instance);
     }
+    this.scenarioId = scenarioId;
   }
 
   // endregion
@@ -50,7 +51,7 @@ export default class Instance {
 
     return this
       .get()
-      .then((instanceObject: InstanceObject): string => instanceObject.name);
+      .then((instanceResponse: InstanceResponse): string => instanceResponse.name);
   }
 
   get terminated(): Promise<boolean> {
@@ -60,7 +61,7 @@ export default class Instance {
 
     return this
       .get()
-      .then((instanceObject: InstanceObject): boolean => instanceObject.terminated);
+      .then((instanceResponse: InstanceResponse): boolean => instanceResponse.terminated);
   }
 
   get instantiation(): Promise<Date> {
@@ -70,33 +71,28 @@ export default class Instance {
 
     return this
       .get()
-      .then((instanceObject: InstanceObject): Date => new Date(instanceObject.instantiation));
+      .then((instanceResponse: InstanceResponse): Date => new Date(instanceResponse.instantiation));
   }
 
   public async update(): Promise<Instance> {
-    await this.get();
-    return this;
+    return super.update() as Promise<Instance>;
   }
 
   // endregion
 
   // region private methods
 
-  private initializeInstance(instanceObject: InstanceObject) {
-    this.id = instanceObject.id;
-    this.instanceName = instanceObject.name;
-    this.instanceTerminated = instanceObject.terminated;
-    this.instanceInstantiationTime = new Date(instanceObject.instantiation);
+  protected initialize(instanceResponse: InstanceResponse) {
+    this.instanceName = instanceResponse.name;
+    this.instanceTerminated = instanceResponse.terminated;
+    this.instanceInstantiationTime = new Date(instanceResponse.instantiation);
   }
 
-  private async get(): Promise<InstanceObject> {
-    const instanceUrl: string = this.instanceUrl();
-    const instanceObject = await Utils.fetchJson(instanceUrl);
-    this.initializeInstance(instanceObject);
-    return instanceObject;
+  protected get(): Promise<InstanceResponse> {
+    return super.get() as Promise<InstanceResponse>;
   }
 
-  private instanceUrl(): string {
+  protected url(): string {
     return config.api.chimera.base + 'interface/v2/scenario/' + this.scenarioId + '/instance/' + this.id;
   }
 
