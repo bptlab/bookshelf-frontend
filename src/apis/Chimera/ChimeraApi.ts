@@ -1,7 +1,7 @@
 import Scenario from '@/apis/Chimera/Scenario';
 import Utils from '@/Utils';
 import config from '@/config';
-import ScenarioObject from '@/interfaces/chimera/ScenarioObject';
+import ScenarioResponse from '@/interfaces/chimera/ScenarioResponse';
 
 export default class ChimeraApi {
   // region public static methods
@@ -20,11 +20,11 @@ export default class ChimeraApi {
 
   // region private static methods
 
-  private static createScenario(scenarioObject: ScenarioObject): Scenario {
+  private static createScenario(scenarioObject: ScenarioResponse): Scenario {
     return new Scenario(scenarioObject);
   }
 
-  private static createScenarios(scenarioObjects: ScenarioObject[]): Scenario[] {
+  private static createScenarios(scenarioObjects: ScenarioResponse[]): Scenario[] {
     return scenarioObjects.map(this.createScenario);
   }
 

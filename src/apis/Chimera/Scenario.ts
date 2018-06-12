@@ -1,10 +1,12 @@
 import Instance from '@/apis/Chimera/Instance';
 import Utils from '@/Utils';
 import config from '@/config';
-import ScenarioObject from '@/interfaces/chimera/ScenarioObject';
+import ScenarioResponse from '@/interfaces/chimera/ScenarioResponse';
 import InstanceObect from '@/interfaces/chimera/InstanceObject';
+import ApiEndpoint from '@/apis/Chimera/ApiEndpoint';
+import EndpointResponse from '@/interfaces/chimera/EndpointResponse';
 
-export default class Scenario {
+export default class Scenario extends ApiEndpoint {
   // region public static methods
   // endregion
 
@@ -12,9 +14,6 @@ export default class Scenario {
   // endregion
 
   // region public members
-
-  public id: string = '';
-
   // endregion
 
   // region private members
@@ -26,13 +25,13 @@ export default class Scenario {
   // region constructor
 
   public constructor(id: string);
-  public constructor(scenarioObject: ScenarioObject);
+  public constructor(scenarioResponse: ScenarioResponse);
 
-  public constructor(scenario: string | ScenarioObject) {
-    if (typeof scenario === 'string') {
-      this.id = scenario;
+  public constructor(scenarioResponse: string | ScenarioResponse) {
+    if (typeof scenarioResponse === 'string') {
+      super(scenarioResponse as string);
     } else {
-      this.initializeScenario(scenario);
+      super(scenarioResponse as EndpointResponse);
     }
   }
 
@@ -47,7 +46,11 @@ export default class Scenario {
 
     return this
       .get()
-      .then((scenarioObject: ScenarioObject): string => scenarioObject.name);
+      .then((scenarioObject: ScenarioResponse): string => scenarioObject.name);
+  }
+
+  public instance(id: string): Instance {
+    return new Instance(this.id, id);
   }
 
   public async update(): Promise<Scenario> {
@@ -56,29 +59,26 @@ export default class Scenario {
   }
 
   public async instances(): Promise<Instance[]> {
-    const instancesUrl: string = this.instancesUrl();
-    const instanceObjects = await Utils.fetchJson(instancesUrl);
+    const url: string = this.instancesUrl();
+    const instanceObjects = await Utils.fetchJson(url);
     return this.createInstances(instanceObjects);
-  }
-
-  public instance(id: string): Instance {
-    return new Instance(this.id, id);
   }
 
   // endregion
 
   // region private methods
 
-  private initializeScenario(scenarioObject: ScenarioObject) {
-    this.id = scenarioObject.id;
-    this.scenarioName = scenarioObject.name;
+  protected initialize(scenarioResponse: ScenarioResponse) {
+    super.initialize(scenarioResponse);
+    this.scenarioName = scenarioResponse.name;
   }
 
-  private async get(): Promise<ScenarioObject> {
-    const scenarioUrl: string = this.scenarioUrl();
-    const scenarioObject = await Utils.fetchJson(scenarioUrl);
-    this.initializeScenario(scenarioObject);
-    return scenarioObject;
+  protected get(): Promise<ScenarioResponse> {
+    return super.get() as Promise<ScenarioResponse>;
+  }
+
+  protected url(): string {
+    return config.api.chimera.base + 'interface/v2/scenario/' + this.id;
   }
 
   private createInstance(instanceObect: InstanceObect): Instance {
@@ -87,10 +87,6 @@ export default class Scenario {
 
   private createInstances(instanceObects: InstanceObect[]): Instance[] {
     return instanceObects.map(this.createInstance);
-  }
-
-  private scenarioUrl(): string {
-    return config.api.chimera.base + 'interface/v2/scenario/' + this.id;
   }
 
   private instancesUrl(): string {
