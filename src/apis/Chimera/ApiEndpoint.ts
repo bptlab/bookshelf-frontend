@@ -18,18 +18,6 @@ export default class ApiEndpoint {
   // endregion
 
   // region constructor
-
-  public constructor(id: string);
-  public constructor(endpointResponse: EndpointResponse);
-
-  public constructor(endpointResponse: string | EndpointResponse) {
-    if (typeof endpointResponse === 'string') {
-      this.id = endpointResponse;
-    } else {
-      this.initialize(endpointResponse);
-    }
-  }
-
   // endregion
 
   // region public methods
