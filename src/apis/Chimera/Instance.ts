@@ -18,8 +18,9 @@ export default class Instance {
 
   // region private members
 
-  private _name: string | undefined;
-  private _terminated: boolean | undefined;
+  private instanceName: string | undefined;
+  private instanceTerminated: boolean | undefined;
+  private instanceInstantiationTime: Date | undefined;
 
   // endregion
 
@@ -43,8 +44,8 @@ export default class Instance {
   // region public methods
 
   get name(): Promise<string> {
-    if (this._name) {
-      return new Promise(() => this._name);
+    if (this.instanceName) {
+      return new Promise(() => this.instanceName);
     }
 
     return this
@@ -53,13 +54,23 @@ export default class Instance {
   }
 
   get terminated(): Promise<boolean> {
-    if (this._terminated) {
-      return new Promise(() => this._terminated);
+    if (this.instanceTerminated) {
+      return new Promise(() => this.instanceTerminated);
     }
 
     return this
       .get()
       .then((instanceObject: InstanceObject): boolean => instanceObject.terminated);
+  }
+
+  get instantiation(): Promise<Date> {
+    if (this.instanceInstantiationTime) {
+      return new Promise(() => this.instanceInstantiationTime);
+    }
+
+    return this
+      .get()
+      .then((instanceObject: InstanceObject): Date => new Date(instanceObject.instantiation));
   }
 
   public async update(): Promise<Instance> {
@@ -73,8 +84,9 @@ export default class Instance {
 
   private initializeInstance(instanceObject: InstanceObject) {
     this.id = instanceObject.id;
-    this._name = instanceObject.name;
-    this._terminated = instanceObject.terminated;
+    this.instanceName = instanceObject.name;
+    this.instanceTerminated = instanceObject.terminated;
+    this.instanceInstantiationTime = new Date(instanceObject.instantiation);
   }
 
   private async get(): Promise<InstanceObject> {
