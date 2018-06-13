@@ -1,8 +1,6 @@
 import ApiEndpoint from '@/apis/Chimera/ApiEndpoint';
 import InstanceResponse from '@/interfaces/chimera/InstanceResponse';
-import Utils from '@/Utils';
 import config from '@/config';
-import ScenarioResponse from '@/interfaces/chimera/ScenarioResponse';
 
 export default class Instance extends ApiEndpoint {
   // region public static methods
