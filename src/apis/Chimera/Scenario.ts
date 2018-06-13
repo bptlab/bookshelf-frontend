@@ -50,12 +50,12 @@ export default class Scenario extends ApiEndpoint {
       .then((scenarioResponse: ScenarioResponse): string => scenarioResponse.name);
   }
 
-  public instance(id: string): Instance {
-    return new Instance(this.id, id);
-  }
-
   public async update(): Promise<Scenario> {
     return super.update() as Promise<Scenario>;
+  }
+
+  public instance(id: string): Instance {
+    return new Instance(this.id, id);
   }
 
   public async instances(): Promise<Instance[]> {

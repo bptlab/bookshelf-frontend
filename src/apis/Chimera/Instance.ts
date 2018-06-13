@@ -79,6 +79,10 @@ export default class Instance extends ApiEndpoint {
     return super.update() as Promise<Instance>;
   }
 
+  public dataobject(id: string): Dataobject {
+    return new Dataobject(this.scenarioId, this.id, id);
+  }
+
   public async dataobjects(): Promise<Dataobject[]> {
     const url = this.dataobjectsUrl();
     const dataobjectResponses: DataobjectResponse[] = await Utils.fetchJson(url);
