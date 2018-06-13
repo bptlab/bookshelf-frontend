@@ -1,9 +1,11 @@
 import ApiEndpoint from '@/apis/Chimera/ApiEndpoint';
-import InstanceResponse from '@/interfaces/chimera/InstanceResponse';
+import Dataobject from '@/apis/Chimera/Dataobject';
+import Activity from '@/apis/Chimera/Activity';
 import config from '@/config';
 import Utils from '@/Utils';
+import InstanceResponse from '@/interfaces/chimera/InstanceResponse';
 import DataobjectResponse from '@/interfaces/chimera/DataobjectResponse';
-import Dataobject from '@/apis/Chimera/Dataobject';
+import ActivityResponse from '@/interfaces/chimera/ActivityResponse';
 
 export default class Instance extends ApiEndpoint {
   // region public static methods
@@ -89,6 +91,16 @@ export default class Instance extends ApiEndpoint {
     return this.createDataobjects(dataobjectResponses);
   }
 
+  public activity(id: string): Activity {
+    return new Activity(this.scenarioId, this.id, id);
+  }
+
+  public async activities(): Promise<Activity[]> {
+    const url = this.activitiesUrl();
+    const activitiesResponse: ActivityResponse[] = await Utils.fetchJson(url);
+    return this.createActivities(activitiesResponse);
+  }
+
   // endregion
 
   // region private methods
@@ -111,12 +123,24 @@ export default class Instance extends ApiEndpoint {
     return dataobjectResponses.map(this.createDataobject);
   }
 
+  protected createActivity(activityResponse: ActivityResponse): Activity {
+    return new Activity(this.scenarioId, this.id, activityResponse);
+  }
+
+  protected createActivities(activitiesResponse: ActivityResponse[]): Activity[] {
+    return activitiesResponse.map(this.createActivity);
+  }
+
   protected url(): string {
     return config.api.chimera.base + 'interface/v2/scenario/' + this.scenarioId + '/instance/' + this.id;
   }
 
   protected dataobjectsUrl(): string {
     return config.api.chimera.base + 'interface/v2/scenario/' + this.scenarioId + '/instance/' + this.id + '/dataobject';
+  }
+
+  protected activitiesUrl(): string {
+    return config.api.chimera.base + 'interface/v2/scenario/' + this.scenarioId + '/instance/' + this.id + '/activity';
   }
 
   // endregion
