@@ -1,6 +1,9 @@
 import ApiEndpoint from '@/apis/Chimera/ApiEndpoint';
 import InstanceResponse from '@/interfaces/chimera/InstanceResponse';
 import config from '@/config';
+import Utils from '@/Utils';
+import DataobjectResponse from '@/interfaces/chimera/DataobjectResponse';
+import Dataobject from '@/apis/Chimera/Dataobject';
 
 export default class Instance extends ApiEndpoint {
   // region public static methods
@@ -76,6 +79,12 @@ export default class Instance extends ApiEndpoint {
     return super.update() as Promise<Instance>;
   }
 
+  public async dataobjects(): Promise<Dataobject[]> {
+    const url = this.dataobjectsUrl();
+    const dataobjectResponses: DataobjectResponse[] = await Utils.fetchJson(url);
+    return this.createDataobjects(dataobjectResponses);
+  }
+
   // endregion
 
   // region private methods
@@ -90,8 +99,20 @@ export default class Instance extends ApiEndpoint {
     return super.get() as Promise<InstanceResponse>;
   }
 
+  protected createDataobject(dataobjectResponse: DataobjectResponse): Dataobject {
+    return new Dataobject(this.scenarioId, this.id, dataobjectResponse);
+  }
+
+  protected createDataobjects(dataobjectResponses: DataobjectResponse[]): Dataobject[] {
+    return dataobjectResponses.map(this.createDataobject);
+  }
+
   protected url(): string {
     return config.api.chimera.base + 'interface/v2/scenario/' + this.scenarioId + '/instance/' + this.id;
+  }
+
+  protected dataobjectsUrl(): string {
+    return config.api.chimera.base + 'interface/v2/scenario/' + this.scenarioId + '/instance/' + this.id + '/dataobject';
   }
 
   // endregion

@@ -1,5 +1,6 @@
 import ApiEndpoint from '@/apis/Chimera/ApiEndpoint';
 import Instance from '@/apis/Chimera/Instance';
+import Dataobject from '@/apis/Chimera/Dataobject';
 import Utils from '@/Utils';
 import config from '@/config';
 import ScenarioResponse from '@/interfaces/chimera/ScenarioResponse';
@@ -61,6 +62,15 @@ export default class Scenario extends ApiEndpoint {
     const url: string = this.instancesUrl();
     const instanceResponses = await Utils.fetchJson(url);
     return this.createInstances(instanceResponses);
+  }
+
+  public async dataobjects(): Promise<Dataobject[]> {
+    const instances: Instance[] = await this.instances();
+    const dataobjectPromises: Array<Promise<Dataobject[]>> = instances.map(
+      (instance: Instance): Promise<Dataobject[]> => instance.dataobjects(),
+    );
+    const instanceDataobjects: Dataobject[][] = await Promise.all(dataobjectPromises);
+    return Utils.mergeArrays(instanceDataobjects);
   }
 
   // endregion
