@@ -1,6 +1,10 @@
 import ApiEndpoint from '@/apis/Chimera/ApiEndpoint';
-import ActivityResponse from '@/interfaces/chimera/ActivityResponse';
+import Dataobject from '@/apis/Chimera/Dataobject';
+import Utils from '@/Utils';
 import config from '@/config';
+import ActivityResponse from '@/interfaces/chimera/ActivityResponse';
+import DataobjectResponse from '@/interfaces/chimera/DataobjectResponse';
+import ActivityOutputResponse from '@/interfaces/chimera/ActivityOutputResponse';
 
 export default class Activity extends ApiEndpoint {
   // region public static methods
@@ -67,6 +71,30 @@ export default class Activity extends ApiEndpoint {
     return super.update() as Promise<Activity>;
   }
 
+  public async begin(dataobjects?: Dataobject[]): Promise<Response> {
+    const url: string = this.beginUrl();
+    let body: string[] = [];
+    if (dataobjects) {
+      body = dataobjects.map(
+        (dataobject: Dataobject): string => dataobject.id,
+      );
+    }
+
+    return fetch(url, {
+        method: 'post',
+        body: JSON.stringify(body),
+    });
+  }
+
+  public async output(): Promise<ActivityOutputResponse[]> {
+    const url: string = this.outputUrl();
+    return Utils.fetchJson(url);
+  }
+
+  public async terminate(activityOutputResponse: ActivityOutputResponse): Promise<Response> {
+    //TODO: implement terminate function
+  }
+
   // endregion
 
   // region private methods
@@ -80,8 +108,28 @@ export default class Activity extends ApiEndpoint {
     return super.get() as Promise<ActivityResponse>;
   }
 
+  protected createDataobject(dataobjectResponse: DataobjectResponse): Dataobject {
+    return new Dataobject(this.scenarioId, this.id, dataobjectResponse);
+  }
+
+  protected createDataobjects(dataobjectResponses: DataobjectResponse[]): Dataobject[] {
+    return dataobjectResponses.map(this.createDataobject);
+  }
+
   protected url(): string {
-    return config.api.chimera.base + 'interface/v2/scenario/' + this.scenarioId + '/instance/' + this.instanceId + '/activity/' + this.id;
+    return config.api.chimera.base + 'interface/v2/scenario/' + this.scenarioId + '/instance/' + this.instanceId + '/activityinstance/' + this.id;
+  }
+
+  protected beginUrl(): string {
+    return this.url() + '/begin';
+  }
+
+  protected outputUrl(): string {
+    return this.url() + '/output';
+  }
+
+  protected terminateUrl(): string {
+    return this.url() + '/terminate';
   }
 
   // endregion
