@@ -9,19 +9,22 @@ import config from '@/config';
 export default class ChimeraApi {
 
     // region public members
-    public static getInstanceDataobjects(instanceId: string): Promise<Dataobject[]> {
+    // endregion
+
+    // region public methods
+    public static async getInstanceDataobjects(instanceId: string): Promise<Dataobject[]> {
         const url: string = this.getDataobjectsUrl(instanceId);
 
         return Utils.fetchJson(url);
     }
 
-    public static getInstanceActivities(instanceId: string): Promise<Activity[]> {
+    public static async getInstanceActivities(instanceId: string): Promise<Activity[]> {
         const url: string = this.getActivitiesUrl(instanceId);
 
         return Utils.fetchJson(url);
     }
 
-    public static getEnabledActivities(instanceId: string): Promise<Activity[]> {
+    public static async getEnabledActivities(instanceId: string): Promise<Activity[]> {
         return this.getInstanceActivities(instanceId)
             .then((activities: Activity[]): Activity[] => {
                 return activities.filter((activity: Activity) => {
@@ -30,12 +33,11 @@ export default class ChimeraApi {
             });
     }
 
-    public static getScenarioDataobjects(): Promise<Dataobject[]> {
+    public static async getScenarioDataobjects(): Promise<Dataobject[]> {
         const url: string = this.getScenarioInstancesUrl();
+        const scenarios: ScenarioInstance[] = await Utils.fetchJson(url);
 
-        return Utils
-            .fetchJson(url)
-            .then(this.fetchScenarioDataobjects);
+        return this.fetchScenarioDataobjects(scenarios);
     }
 
     public static startInstance(book: Book) {
@@ -86,9 +88,6 @@ export default class ChimeraApi {
                 this.terminateActivity(instanceId, activityId);
             });
     }
-    // endregion
-
-    // region public methods
     // endregion
 
     // region private members
