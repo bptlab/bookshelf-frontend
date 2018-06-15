@@ -1,39 +1,12 @@
-var express = require('express');
-var request = require('request');
+var express = require('express'),
+    request = require('request');
 
-const server = express();
+var app = express();  
 
-/* CORS API PROXY SETUP */
-server.use('/chimera/api', function (req, res) {
-  if (req.method !== 'GET' && req.method !== 'POST') {
-    return;
-  }
-
-  var url = 'https://bpt-lab.org/bpt-bookshelf/chimera/api' + req.url;
-  console.log(url);
-  try {
-    var response;
-    if (req.method == 'GET') {
-      response = request.get({ uri: url, json: req.body });
-    } else if (req.method == 'POST') {
-      response = request.post({ 
-        uri: url, 
-        json: req.body, 
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-    }
-    res.setHeader('Content-Type', 'application/json');
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader("Access-Control-Allow-Headers", "X-Requested-With");
-    req.pipe(response).pipe(res);
-  }
-  catch(err) {
-    console.log(err);
-  }
+// Forward all requests from /api to http://foo.com/api
+app.use('/chimera/api', function(req, res) {
+  res.header("Access-Control-Allow-Origin", "*");
+  req.pipe(request("https://bpt-lab.org/bpt-bookshelf/chimera/api" + req.url)).pipe(res);
 });
 
-server.listen(3000, function () {
-  console.log('Server listening on localhost:3000.');
-});
+app.listen(process.env.PORT || 3000);
