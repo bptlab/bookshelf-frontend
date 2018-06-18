@@ -33,7 +33,7 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import Authentification from '@/apis/Authentification';
-import UIkit from 'uikit';
+import 'uikit';
 
 @Component
 export default class Header extends Vue {
@@ -56,7 +56,6 @@ export default class Header extends Vue {
     Authentification.onChange = (loggedIn) => {
         this.loggedIn = loggedIn;
     };
-    UIkit.navbar('.uk-navbar-container');
   }
   // endregion
 }
