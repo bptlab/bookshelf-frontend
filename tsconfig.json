@@ -11,7 +11,9 @@
     "sourceMap": true,
     "baseUrl": ".",
     "types": [
-      "node"    ],
+      "node",
+      "uikit"
+    ],
     "paths": {
       "@/*": [
         "src/*"
