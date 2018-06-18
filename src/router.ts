@@ -2,7 +2,6 @@ import Vue from 'vue';
 import Router, { Route } from 'vue-router';
 import Booklist from './views/Booklist.vue';
 import Bookwish from './views/Bookwish.vue';
-import About from './views/About.vue';
 import Login from './views/Login.vue';
 import Admin from '@/views/Admin.vue';
 import Authentification from '@/apis/Authentification';

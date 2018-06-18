@@ -1,8 +1,7 @@
 {
     "api": {
         "chimera": {
-            "base": "https://bpt-lab.org/bpt-bookshelf/chimera/api",
-            "proxy": "http://localhost:3000/chimera/api/"
+            "base": "https://bpt-lab.org/bpt-bookshelf/chimera/api/"
         },
         "google": {
             "base": "https://www.googleapis.com/",
