@@ -2,7 +2,7 @@
   <div class="booklist">
     <input v-on:keyup="searchBooks" type="text" id="searchbar" class="uk-input uk-margin-large-bottom" placeholder="Search Books">
     <div class="uk-child-width-1-3@s uk-grid-match uk-grid">
-      <div class="column  uk-margin-bottom">
+      
         <!-- Post-->
         <div class="post-module">
           <!-- Thumbnail-->
@@ -290,15 +290,15 @@ body {
       text-transform: uppercase;
     }
     .title {
-      margin: 0;
-      padding: 0 0 10px;
+      margin: 0 0 10px;
+      padding: 0;
       color: @dark_gray;
       font-size: 26px;
       font-weight: 700;
     }
     .sub_title {
-      margin: 0;
-      padding: 0 0 20px;
+      margin: 0 0 20px;
+      padding: 0;
       color: @accent;
       font-size: 20px;
       font-weight: 400;
@@ -314,7 +314,7 @@ body {
       line-height: 1.8em;
     }
     .post-meta {
-      margin: 30px 0 0;
+      margin: 0 0 25px;
       color: @light_gray;
       .timestamp {
         margin: 0 16px 0 0;
