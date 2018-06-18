@@ -1,0 +1,15 @@
+{
+    "api": {
+        "chimera": {
+            "base": "${CHIMERA_BASE}"
+        },
+        "google": {
+            "base": "${GOOGLE_BASE}",
+            "key": "${GOOGLE_KEY}"
+        }
+    },
+    "scenario": {
+        "id": "${SCENARIO_ID}",
+        "caseStart": "${CASESTART_ID}"
+    }
+}

@@ -3,13 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "concurrently --kill-others \"npm run serve\" \"npm run api-server\"",
-    "serve": "vue-cli-service serve --open",
-    "api-server": "node server.js",
+    "start": "vue-cli-service serve --open",
     "build": "vue-cli-service build",
+    "envsubst": "envsub src/config-template.json src/config.json",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "envsub": "^3.1.0",
     "@types/uikit": "^2.27.6",
     "express": "^4.16.3",
     "fuse.js": "^3.2.0",
@@ -25,10 +25,7 @@
     "@vue/cli-plugin-pwa": "^3.0.0-beta.11",
     "@vue/cli-plugin-typescript": "^3.0.0-beta.11",
     "@vue/cli-service": "^3.0.0-beta.11",
-    "concurrently": "^3.5.1",
     "less-loader": "^4.1.0",
-    "node-sass": "^4.9.0",
-    "sass-loader": "^7.0.1",
     "vue-template-compiler": "^2.5.16"
   },
   "browserslist": [
