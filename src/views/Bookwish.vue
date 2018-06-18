@@ -69,6 +69,7 @@ export default class Bookwish extends Vue {
   }
 
   private handleBookwish(book: Book) {
+    console.log(book);
     ChimeraApi.startInstance(book);
   }
 
@@ -80,19 +81,18 @@ export default class Bookwish extends Vue {
     this.books = bookResponse.items.map((volume: Volume) => {
       console.log(volume);
       return {
-        title: volume.volumeInfo.title,
-        subtitle: volume.volumeInfo.subtitle,
-        authors: volume.volumeInfo.authors ? volume.volumeInfo.authors : [],
+        title: volume.volumeInfo.title ? volume.volumeInfo.title : '',
+        subtitle: volume.volumeInfo.subtitle ? volume.volumeInfo.subtitle : '',
+        authors: volume.volumeInfo.authors ? volume.volumeInfo.authors.join(', ') : '',
         publishedDate: new Date(volume.volumeInfo.publishedDate),
-        description: volume.volumeInfo.description,
-        pageCount: volume.volumeInfo.pageCount,
-        language: volume.volumeInfo.language,
-        printType: volume.volumeInfo.printType,
-        mainCategory: volume.volumeInfo.mainCategory,
-        categories: volume.volumeInfo.categories ? volume.volumeInfo.categories : [],
-        averageRating: volume.volumeInfo.averageRating,
+        description: volume.volumeInfo.description ? volume.volumeInfo.description : '',
+        pageCount: volume.volumeInfo.pageCount ? volume.volumeInfo.pageCount : 0,
+        language: volume.volumeInfo.language ? volume.volumeInfo.language : '',
+        printType: volume.volumeInfo.printType ? volume.volumeInfo.printType : '',
+        category: volume.volumeInfo.categories ? volume.volumeInfo.categories[0] : 'Uncategorized',
+        averageRating: volume.volumeInfo.averageRating ? volume.volumeInfo.averageRating : 0,
         imageUrl: volume.volumeInfo.imageLinks ? volume.volumeInfo.imageLinks.thumbnail : '',
-        infoUrl: volume.volumeInfo.infoLink,
+        infoUrl: volume.volumeInfo.infoLink ? volume.volumeInfo.infoLink : '',
       }
     });
   }

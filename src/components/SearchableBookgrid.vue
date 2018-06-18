@@ -21,9 +21,9 @@
               </div>
               <!-- Post Content-->
               <div class="post-content">
-                <div class="category">{{ book.categories[0] ? book.categories[0] : 'Uncategorized' }}</div>
+                <div class="category">{{ book.category }}</div>
                 <h1 class="title">{{book.title}}</h1>
-                <h2 class="sub_title">{{book.authors.join(', ')}}</h2>
+                <h2 class="sub_title">{{book.authors}}</h2>
                 <p class="description">{{book.description}}</p>
                 <div class="post-meta">
                   <span class="timestamp">
@@ -34,7 +34,7 @@
                   </span>
                 </div>
                 <div class="post-actions">
-                  <a v-for="(action, index) in actions" :key="index" v-on:click="action.action">
+                  <a v-for="(action, index) in actions" :key="index" v-on:click="action.action(book)">
                     {{action.title}}
                   </a>
                 </div>

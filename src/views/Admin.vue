@@ -1,62 +1,17 @@
 <template>
-  <div class="booklist">
-    <input v-on:keyup="searchBooks" type="text" id="searchbar" class="uk-input uk-margin-large-bottom" placeholder="Search Books">
-    <div class="uk-child-width-1-3@s uk-grid-match uk-grid">
-      
-        <!-- Post-->
-        <div class="post-module">
-          <!-- Thumbnail-->
-          <div class="thumbnail">
-            <div class="date">
-              <div class="day">27</div>
-              <div class="month">Mar</div>
-            </div><img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/169963/photo-1429043794791-eb8f26f44081.jpeg">
-          </div>
-          <!-- Post Content-->
-          <div class="post-content">
-            <div class="category">Photos</div>
-            <h1 class="title">City Lights in New York</h1>
-            <h2 class="sub_title">The city that never sleeps.</h2>
-            <p class="description">New York, the largest city in the U.S., is an architectural marvel with plenty of historic monuments, magnificent buildings and countless dazzling skyscrapers.</p>
-            <div class="post-meta"><span class="timestamp"><i class="fa fa-clock-">o</i> 6 mins ago</span><span class="comments"><i class="fa fa-comments"></i><a href="#"> 39 comments</a></span></div>
-          </div>
-        </div>
-      </div>
-
-      <div v-for="book in displayedBooks" :key="book.id">
-        <div class="column uk-margin-medium-bottom">
-          <!-- Post-->
-          <div class="post-module">
-            <!-- Thumbnail-->
-            <div class="thumbnail">
-              <div class="date">
-                <div class="day">2017</div>
-                <div class="month">Mar</div>
-              </div><img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/169963/photo-1429043794791-eb8f26f44081.jpeg">
-            </div>
-            <!-- Post Content-->
-            <div class="post-content">
-              <div class="category">Book</div>
-              <h1 class="title">{{book.title}}</h1>
-              <h2 class="sub_title">The city that never sleeps.</h2>
-              <p class="description">New York, the largest city in the U.S., is an architectural marvel with plenty of historic monuments, magnificent buildings and countless dazzling skyscrapers.</p>
-              <div class="post-meta">
-                <a class="actions" v-on:click="handleBookAction(book, action)" v-for="action in book.actions" :key="action.id">
-                  {{ action.label }}
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-    </div>
-  </div>
+  <main class="bookmanagement">
+    <SearchableBookgrid 
+        title="Bookmanagement"
+        description="All books, desired by users, will be displayed here. Use the buttons below each of these to manage the book requests."
+        v-bind:books=displayedBooks
+        v-bind:actions=bookActions
+        v-bind:onSearch=searchBooks />
+  </main>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
+import SearchableBookgrid from '@/components/SearchableBookgrid.vue';
 import Component from "vue-class-component";
 import Fuse from "fuse.js";
 import ChimeraApi from "@/apis/ChimeraApi";
@@ -67,7 +22,11 @@ import config from "@/config";
 import Activity from "@/interfaces/chimera/Activity";
 import Bookshelf from "@/Bookshelf.vue";
 
-@Component
+@Component({
+  components: {
+    SearchableBookgrid,
+  },
+})
 export default class Booklist extends Vue {
   // region public members
   public displayedBooks: Book[] = [];
@@ -102,17 +61,26 @@ export default class Booklist extends Vue {
   private mapDataobjectsToBooks(dataobjects: Dataobject[]): Book[] {
     const books = dataobjects.map((dataobject: Dataobject) => {
       const book: Book = {
-        id: dataobject.id,
-        instanceId: dataobject.instanceId,
-        state: dataobject.state,
-        isbn: "",
-        title: "",
-        actions: []
+        title: '',
+        subtitle: '',
+        authors: '',
+        publishedDate: new Date(),
+        description: '',
+        pageCount: 0,
+        language: '',
+        printType: '',
+        category: '',
+        averageRating: 0,
+        imageUrl: '',
+        infoUrl: '',
       };
-
       dataobject.attributeConfiguration.forEach(
         (attribute: DataobjectAttribute) => {
-          book[attribute.name] = attribute.value;
+          if (attribute.name == 'publishedDate') {
+            book[attribute.name] = new Date(attribute.value);
+          } else {
+            book[attribute.name] = attribute.value;
+          }
         }
       );
 
@@ -135,7 +103,6 @@ export default class Booklist extends Vue {
       book.actions = await ChimeraApi.getEnabledActivities(book.instanceId);
       return book;
     });
-    console.log(books);
     this.books = books;
     return this.books;
   }
