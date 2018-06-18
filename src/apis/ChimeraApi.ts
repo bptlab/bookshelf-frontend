@@ -44,6 +44,10 @@ export default class ChimeraApi {
         const url: string = this.getInstanceStartUrl();
         return fetch(url, {
             method: 'post',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify(book),
         });
     }
@@ -60,6 +64,10 @@ export default class ChimeraApi {
 
         return fetch(url, {
             method: 'post',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify(dataobjects),
         });
     }
@@ -75,6 +83,10 @@ export default class ChimeraApi {
                 setTimeout(() => {
                     fetch(url, {
                         method: 'post',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
                         body: JSON.stringify({ transitions: JSON.stringify(dataobjects), values: '{}' }),
                     });
                 }, 30000);
