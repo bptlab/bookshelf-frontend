@@ -5,9 +5,11 @@
   "scripts": {
     "start": "vue-cli-service serve --open",
     "build": "vue-cli-service build",
+    "envsubst": "envsub src/config-template.json src/config.json",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "envsub": "^3.1.0",
     "express": "^4.16.3",
     "fuse.js": "^3.2.0",
     "register-service-worker": "^1.0.0",

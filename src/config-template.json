@@ -1,15 +1,15 @@
 {
     "api": {
         "chimera": {
-            "base": "https://bpt-lab.org/bpt-bookshelf/chimera/api/"
+            "base": "${CHIMERA_BASE}"
         },
         "google": {
-            "base": "https://www.googleapis.com/",
-            "key": ""
+            "base": "${GOOGLE_BASE}",
+            "key": "${GOOGLE_KEY}"
         }
     },
     "scenario": {
-        "id": "",
-        "caseStart": ""
+        "id": "${SCENARIO_ID}",
+        "caseStart": "${CASESTART_ID}"
     }
 }
