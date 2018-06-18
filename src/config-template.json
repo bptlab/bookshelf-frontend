@@ -1,0 +1,16 @@
+{
+    "api": {
+        "chimera": {
+            "base": "https://bpt-lab.org/bpt-bookshelf/chimera/api",
+            "proxy": "http://localhost:3000/chimera/api/"
+        },
+        "google": {
+            "base": "https://www.googleapis.com/",
+            "key": ""
+        }
+    },
+    "scenario": {
+        "id": "",
+        "caseStart": ""
+    }
+}

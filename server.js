@@ -1,5 +1,6 @@
 var express = require('express');
 var request = require('request');
+const config = require('./src/config.json');
 
 const server = express();
 
@@ -9,7 +10,7 @@ server.use('/chimera/api', function (req, res) {
     return;
   }
 
-  var url = 'https://bpt-lab.org/bpt-bookshelf/chimera/api' + req.url;
+  var url = config.api.chimera.base + req.url;
   console.log(url);
   try {
     var response;

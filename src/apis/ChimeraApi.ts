@@ -119,7 +119,7 @@ export default class ChimeraApi {
     }
 
     private static getScenarioInstancesUrl(): string {
-        return config.api.chimera.base + 'interface/v2/scenario/' + config.scenario.id + '/instance/';
+        return config.api.chimera.proxy + 'interface/v2/scenario/' + config.scenario.id + '/instance/';
     }
 
     private static getDataobjectsUrl(instanceId: string): string {
@@ -147,7 +147,7 @@ export default class ChimeraApi {
     }
 
     private static getInstanceStartUrl(): string {
-        return config.api.chimera.base + 'eventdispatcher/scenario/' + config.scenario.id + '/casestart/' + config.scenario.caseStart;
+        return config.api.chimera.proxy + 'eventdispatcher/scenario/' + config.scenario.id + '/casestart/' + config.scenario.caseStart;
     }
     // endregion
 }
