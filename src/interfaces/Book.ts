@@ -1,7 +1,16 @@
 export default interface Book {
     [key: string]: any;
-    id: string;
-    state: string;
-    isbn: string;
     title: string;
+    subtitle: string;
+    authors: [ string ];
+    publishedDate: Date;
+    description: string;
+    pageCount: number;
+    language: string;
+    printType: string;
+    mainCategory: string;
+    categories: [ string ];
+    averageRating: number;
+    imageUrl: string;
+    infoUrl: string;
 }
