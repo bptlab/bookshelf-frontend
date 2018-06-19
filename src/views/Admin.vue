@@ -61,33 +61,9 @@ export default class Booklist extends Vue {
 
   private async mapDataobjectsToBooks(dataobjects: Dataobject[]): Promise<Book[]> {
     const books = await Promise.all(dataobjects.map( async (dataobject: Dataobject): Promise<Book> => {
-      const book: Book = {
-        title: '',
-        subtitle: '',
-        authors: '',
-        publishedDate: new Date(),
-        description: '',
-        pageCount: 0,
-        language: '',
-        printType: '',
-        category: '',
-        averageRating: 0,
-        imageUrl: '',
-        infoUrl: '',
-      };
-
-      const attributes = await dataobject.attributes;
-      attributes.forEach((attribute: DataobjectAttribute) => {
-          if (attribute.name === 'publishedDate') {
-            book[attribute.name] = new Date(attribute.value);
-          } else {
-            book[attribute.name] = attribute.value;
-          }
-        },
-      );
-
-      book.actions = await this.createBookActions(dataobject);
-
+      
+      const book: Book = await this.initializeBook(dataobject);
+      book.actions = await this.initializeBookActions(dataobject);
       return book;
     }));
 
@@ -95,7 +71,36 @@ export default class Booklist extends Vue {
     return this.books;
   }
 
-  private async createBookActions(dataobject: Dataobject): Promise<BookAction[]> {
+  private async initializeBook(dataobject: Dataobject): Promise<Book> {
+    const book: Book = {
+      title: '',
+      subtitle: '',
+      authors: '',
+      publishedDate: new Date(),
+      description: '',
+      pageCount: 0,
+      language: '',
+      printType: '',
+      category: '',
+      averageRating: 0,
+      imageUrl: '',
+      infoUrl: '',
+    };
+
+    const attributes = await dataobject.attributes;
+    attributes.forEach((attribute: DataobjectAttribute) => {
+        if (attribute.name === 'publishedDate') {
+          book[attribute.name] = new Date(attribute.value);
+        } else {
+          book[attribute.name] = attribute.value;
+        }
+      },
+    );
+
+    return book;
+  }
+
+  private async initializeBookActions(dataobject: Dataobject): Promise<BookAction[]> {
     const activities = await this.getReadyActivities(dataobject);
 
     return await map(activities, async (activity: Activity): Promise<BookAction> => {
