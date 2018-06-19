@@ -97,8 +97,18 @@ export default class Booklist extends Vue {
         }
       );
 
+      book.actions = await map(filteredActivities, 
+        async (activity: Activity): Promise<BookAction> => {
+          return {
+            title: await activity.label,
+            action: () => { activity.complete([ dataobject ]); },
+          }
+        }
+      );
+
       return book;
-    });
+    }));
+
     this.books = books;
     return this.books;
   }
