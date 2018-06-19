@@ -86,6 +86,17 @@ export default class Booklist extends Vue {
         }
       );
       
+
+      const activities = await ChimeraApi
+        .scenario(dataobject.scenarioId)
+        .instance(dataobject.instanceId)
+        .activities();
+      const filteredActivities = await filter(activities, 
+        async (activity: Activity): Promise<boolean> => {
+          return await activity.state === 'READY';
+        }
+      );
+
       return book;
     });
     this.books = books;
