@@ -13,13 +13,15 @@ import Vue from "vue";
 import SearchableBookgrid from '@/components/SearchableBookgrid.vue';
 import Component from "vue-class-component";
 import Fuse from "fuse.js";
-import ChimeraApi from "@/apis/ChimeraApi";
+import ChimeraApi from "@/apis/Chimera/ChimeraApi";
 import Book from "@/interfaces/Book";
-import Dataobject from "@/interfaces/chimera/Dataobject";
+import Dataobject from '@/apis/Chimera/Dataobject';
 import DataobjectAttribute from "@/interfaces/chimera/DataobjectAttribute";
 import config from "@/config";
-import Activity from "@/interfaces/chimera/Activity";
+import Activity from "@/apis/chimera/Activity";
 import Bookshelf from "@/Bookshelf.vue";
+import BookAction from "@/interfaces/BookAction";
+import { filter, map } from 'p-iteration';
 
 @Component({
   components: {
@@ -44,7 +46,8 @@ export default class Booklist extends Vue {
 
   // region private methods
   private mounted() {
-    ChimeraApi.getScenarioDataobjects()
+    ChimeraApi.scenario(config.scenario.id)
+      .dataobjects()
       .then(this.filterDataobjects)
       .then(this.mapDataobjectsToBooks)
       .then(this.initializeSearchbar)
