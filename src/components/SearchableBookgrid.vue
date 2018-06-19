@@ -34,7 +34,7 @@
                   </span>
                 </div>
                 <div class="post-actions">
-                  <a v-for="(action, index) in actions" :key="index" v-on:click="action.action(book)">
+                  <a v-for="(action, index) in book.actions" :key="index" v-on:click="action.action(book)">
                     {{action.title}}
                   </a>
                 </div>
@@ -55,11 +55,6 @@ import Book from '@/interfaces/Book';
 import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-type bookAction = {
-  title: String,
-  action: (book: Book) => any,
-}
-
 @Component
 export default class SearchableBookgrid extends Vue {
   // region properties
@@ -71,9 +66,6 @@ export default class SearchableBookgrid extends Vue {
 
   @Prop()
   books!: Book[];
-
-  @Prop()
-  actions!: bookAction[];
 
   @Prop()
   onSearch!: (event: any) => any;

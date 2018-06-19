@@ -1,3 +1,5 @@
+import BookAction from '@/interfaces/BookAction';
+
 export default interface Book {
     [key: string]: any;
     title: string;
@@ -12,4 +14,5 @@ export default interface Book {
     averageRating: number;
     imageUrl: string;
     infoUrl: string;
+    actions?: BookAction[];
 }

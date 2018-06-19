@@ -29,16 +29,6 @@ import { relative } from 'path';
 export default class Bookwish extends Vue {
   // region public members
   public books: Book[] = [];
-  public bookActions = [
-    {
-      title: 'View Details',
-      action: (book: Book) => window.open(book.infoUrl, '_blank'),
-    },
-    {
-      title: 'Wish Book',
-      action: (book: Book) => this.handleBookwish(book),
-    },
-  ];
   // endregion
 
   // region public methods
@@ -77,9 +67,19 @@ export default class Bookwish extends Vue {
     // TODO: Implement Animation logic
   }
 
-  private formatBooks(bookResponse: any) {
-    this.books = bookResponse.items.map((volume: Volume) => {
-      console.log(volume);
+  private formatBooks(bookResponse: any): Book[] {
+    const bookActions = [
+      {
+        title: 'View Details',
+        action: (book: Book) => window.open(book.infoUrl, '_blank'),
+      },
+      {
+        title: 'Wish Book',
+        action: (book: Book) => this.handleBookwish(book),
+      },
+    ]
+
+    const books: Book[] = bookResponse.items.map((volume: Volume) => {
       return {
         title: volume.volumeInfo.title ? volume.volumeInfo.title : '',
         subtitle: volume.volumeInfo.subtitle ? volume.volumeInfo.subtitle : '',
@@ -93,8 +93,11 @@ export default class Bookwish extends Vue {
         averageRating: volume.volumeInfo.averageRating ? volume.volumeInfo.averageRating : 0,
         imageUrl: volume.volumeInfo.imageLinks ? volume.volumeInfo.imageLinks.thumbnail : '',
         infoUrl: volume.volumeInfo.infoLink ? volume.volumeInfo.infoLink : '',
+        actions: this.bookActions,
       }
     });
+    this.books = books;
+    return this.books;
   }
 
   private searchBooks(title: string) {

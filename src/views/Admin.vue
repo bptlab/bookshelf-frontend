@@ -4,7 +4,6 @@
         title="Bookmanagement"
         description="All books, desired by users, will be displayed here. Use the buttons below each of these to manage the book requests."
         v-bind:books=displayedBooks
-        v-bind:actions=bookActions
         v-bind:onSearch=searchBooks />
   </main>
 </template>
