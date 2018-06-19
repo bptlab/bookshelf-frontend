@@ -49,7 +49,7 @@ export default class Activity extends ApiEndpoint {
 
   get label(): Promise<string> {
     if (this.activityLabel) {
-      return new Promise(() => this.activityLabel);
+      return Promise.resolve(this.activityLabel);
     }
 
     return this
@@ -59,7 +59,7 @@ export default class Activity extends ApiEndpoint {
 
   get state(): Promise<string> {
     if (this.activityState) {
-      return new Promise(() => this.activityState);
+      return Promise.resolve(this.activityState);
     }
 
     return this
@@ -126,6 +126,7 @@ export default class Activity extends ApiEndpoint {
   // region private methods
 
   protected initialize(activityResponse: ActivityResponse) {
+    super.initialize(activityResponse);
     this.activityLabel = activityResponse.label;
     this.activityState = activityResponse.state;
   }

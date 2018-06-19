@@ -42,7 +42,7 @@ export default class Scenario extends ApiEndpoint {
 
   get name(): Promise<string> {
     if (this.scenarioName) {
-      return new Promise(() => this.scenarioName);
+      return Promise.resolve(this.scenarioName);
     }
 
     return this
@@ -95,7 +95,7 @@ export default class Scenario extends ApiEndpoint {
   }
 
   private createInstances(instanceResponses: InstanceResponse[]): Instance[] {
-    return instanceResponses.map(this.createInstance);
+    return instanceResponses.map(this.createInstance.bind(this));
   }
 
   private instancesUrl(): string {

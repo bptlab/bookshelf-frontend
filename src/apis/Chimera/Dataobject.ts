@@ -47,7 +47,7 @@ export default class Dataobject extends ApiEndpoint {
 
   get dataclass(): Promise<string> {
     if (this.dataobjectDataclass) {
-      return new Promise(() => this.dataobjectDataclass);
+      return Promise.resolve(this.dataobjectDataclass);
     }
 
     return this
@@ -57,7 +57,7 @@ export default class Dataobject extends ApiEndpoint {
 
   get state(): Promise<string> {
     if (this.dataobjectState) {
-      return new Promise(() => this.dataobjectState);
+      return Promise.resolve(this.dataobjectState);
     }
 
     return this
@@ -67,7 +67,7 @@ export default class Dataobject extends ApiEndpoint {
 
   get attributes(): Promise<DataobjectAttribute[]> {
     if (this.dataobjectAttributes) {
-      return new Promise(() => this.dataobjectAttributes);
+      return Promise.resolve(this.dataobjectAttributes);
     }
 
     return this
@@ -86,6 +86,7 @@ export default class Dataobject extends ApiEndpoint {
   // region private methods
 
   protected initialize(dataobjectResponse: DataobjectResponse) {
+    super.initialize(dataobjectResponse);
     this.dataobjectDataclass = dataobjectResponse.dataclass;
     this.dataobjectState = dataobjectResponse.state;
     this.dataobjectAttributes = dataobjectResponse.attributeConfiguration;

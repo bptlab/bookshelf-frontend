@@ -49,7 +49,7 @@ export default class Instance extends ApiEndpoint {
 
   get name(): Promise<string> {
     if (this.instanceName) {
-      return new Promise(() => this.instanceName);
+      return Promise.resolve(this.instanceName);
     }
 
     return this
@@ -59,7 +59,7 @@ export default class Instance extends ApiEndpoint {
 
   get terminated(): Promise<boolean> {
     if (this.instanceTerminated) {
-      return new Promise(() => this.instanceTerminated);
+      return Promise.resolve(this.instanceTerminated);
     }
 
     return this
@@ -69,7 +69,7 @@ export default class Instance extends ApiEndpoint {
 
   get instantiation(): Promise<Date> {
     if (this.instanceInstantiationTime) {
-      return new Promise(() => this.instanceInstantiationTime);
+      return Promise.resolve(this.instanceInstantiationTime);
     }
 
     return this
@@ -106,6 +106,7 @@ export default class Instance extends ApiEndpoint {
   // region private methods
 
   protected initialize(instanceResponse: InstanceResponse) {
+    super.initialize(instanceResponse);
     this.instanceName = instanceResponse.name;
     this.instanceTerminated = instanceResponse.terminated;
     this.instanceInstantiationTime = new Date(instanceResponse.instantiation);
@@ -120,7 +121,7 @@ export default class Instance extends ApiEndpoint {
   }
 
   protected createDataobjects(dataobjectResponses: DataobjectResponse[]): Dataobject[] {
-    return dataobjectResponses.map(this.createDataobject);
+    return dataobjectResponses.map(this.createDataobject.bind(this));
   }
 
   protected createActivity(activityResponse: ActivityResponse): Activity {
@@ -128,7 +129,7 @@ export default class Instance extends ApiEndpoint {
   }
 
   protected createActivities(activitiesResponse: ActivityResponse[]): Activity[] {
-    return activitiesResponse.map(this.createActivity);
+    return activitiesResponse.map(this.createActivity.bind(this));
   }
 
   protected url(): string {
