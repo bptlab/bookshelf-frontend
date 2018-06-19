@@ -53,9 +53,9 @@ export default class Booklist extends Vue {
       .then(this.initializeSearchbar);
   }
 
-  private filterDataobjects(dataobjects: Dataobject[]): Dataobject[] {
-    return dataobjects.filter((dataobject: Dataobject) => {
-      return dataobject.state == "desired";
+  private async filterDataobjects(dataobjects: Dataobject[]): Promise<Dataobject[]> {
+    return await filter(dataobjects, async (dataobject: Dataobject): Promise<boolean> => {
+      return await dataobject.state == "desired";
     });
   }
 
