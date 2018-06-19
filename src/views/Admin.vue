@@ -86,30 +86,35 @@ export default class Booklist extends Vue {
         },
       );
 
-      const activities = await ChimeraApi
-        .scenario(dataobject.scenarioId)
-        .instance(dataobject.instanceId)
-        .activities();
-      const filteredActivities = await filter(activities,
-        async (activity: Activity): Promise<boolean> => {
-          return await activity.state === 'READY';
-        },
-      );
-
-      book.actions = await map(filteredActivities,
-        async (activity: Activity): Promise<BookAction> => {
-          return {
-            title: await activity.label,
-            action: () => { activity.complete([ dataobject ]); },
-          };
-        },
-      );
+      book.actions = await this.createBookActions(dataobject);
 
       return book;
     }));
 
     this.books = books;
     return this.books;
+  }
+
+  private async createBookActions(dataobject: Dataobject): Promise<BookAction[]> {
+    const activities = await this.getReadyActivities(dataobject);
+
+    return await map(activities, async (activity: Activity): Promise<BookAction> => {
+      return {
+        title: await activity.label,
+        action: () => { activity.complete([ dataobject ]); },
+      };
+    });
+  }
+
+  private async getReadyActivities(dataobject: Dataobject): Promise<Activity[]> {
+    const activities = await ChimeraApi
+      .scenario(dataobject.scenarioId)
+      .instance(dataobject.instanceId)
+      .activities();
+
+    return await filter(activities, async (activity: Activity): Promise<boolean> => {
+      return await activity.state === 'READY';
+    });
   }
 
   private initializeSearchbar(books: Book[]): Book[] {
