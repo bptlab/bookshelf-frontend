@@ -93,7 +93,7 @@ export default class Bookwish extends Vue {
         averageRating: volume.volumeInfo.averageRating ? volume.volumeInfo.averageRating : 0,
         imageUrl: volume.volumeInfo.imageLinks ? volume.volumeInfo.imageLinks.thumbnail : '',
         infoUrl: volume.volumeInfo.infoLink ? volume.volumeInfo.infoLink : '',
-        actions: this.bookActions,
+        actions: bookActions,
       }
     });
     this.books = books;
