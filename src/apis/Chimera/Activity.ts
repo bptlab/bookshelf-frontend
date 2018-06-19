@@ -82,17 +82,43 @@ export default class Activity extends ApiEndpoint {
 
     return fetch(url, {
         method: 'post',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        },
         body: JSON.stringify(body),
     });
   }
 
-  public async output(): Promise<ActivityOutputResponse[]> {
+  public async output(): Promise<any> {
     const url: string = this.outputUrl();
     return Utils.fetchJson(url);
   }
 
-  public async terminate(activityOutputResponse: ActivityOutputResponse): Promise<Response> {
-    //TODO: implement terminate function
+  public async terminate(dataStateMapping: any, dataAttributeMapping: any): Promise<Response> {
+    const url: string = this.terminateUrl();
+    const body = {
+      transitions: JSON.stringify(dataStateMapping),
+      values: JSON.stringify(dataAttributeMapping),
+    };
+    return fetch(url, {
+      method: 'post',
+      headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+  }
+
+  public async complete(dataobjects?: Dataobject[]) {
+    await this.begin(dataobjects);
+    const output = await this.output();
+    const dataStateMapping: any = {};
+    Object.keys(output).forEach((key: string) => {
+      dataStateMapping[key] = output[key]!.states[0];
+    });
+    await this.terminate(dataStateMapping, {});
   }
 
   // endregion
