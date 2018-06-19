@@ -130,10 +130,6 @@ export default class Booklist extends Vue {
       this.displayedBooks = this.fuse.search(event.target.value);
     }
   }
-
-  private handleBookAction(book: Book, action: Activity) {
-    ChimeraApi.completeActivity(book.instanceId, action.id, book.id);
-  }
   // endregion
 }
 </script>
