@@ -50,8 +50,7 @@ export default class Booklist extends Vue {
       .dataobjects()
       .then(this.filterDataobjects)
       .then(this.mapDataobjectsToBooks)
-      .then(this.initializeSearchbar)
-      .then(this.addActions);
+      .then(this.initializeSearchbar);
   }
 
   private filterDataobjects(dataobjects: Dataobject[]): Dataobject[] {
@@ -85,7 +84,7 @@ export default class Booklist extends Vue {
           }
         }
       );
-
+      
       return book;
     });
     this.books = books;
@@ -93,19 +92,10 @@ export default class Booklist extends Vue {
   }
 
   private initializeSearchbar(books: Book[]): Book[] {
-    const searchConfig = { keys: ["state", "isbn", "title"] };
+    const searchConfig = { keys: ["authors", "title"] };
 
     this.displayedBooks = this.books;
     this.fuse = new Fuse(this.books, searchConfig);
-    return this.books;
-  }
-
-  private addActions(books: Book[]): Book[] {
-    books.map(async (book: Book): Promise<Book> => {
-      book.actions = await ChimeraApi.getEnabledActivities(book.instanceId);
-      return book;
-    });
-    this.books = books;
     return this.books;
   }
 
