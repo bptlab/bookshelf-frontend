@@ -59,8 +59,8 @@ export default class Booklist extends Vue {
     });
   }
 
-  private mapDataobjectsToBooks(dataobjects: Dataobject[]): Book[] {
-    const books = dataobjects.map((dataobject: Dataobject) => {
+  private async mapDataobjectsToBooks(dataobjects: Dataobject[]): Promise<Book[]> {
+    const books = await Promise.all(dataobjects.map( async (dataobject: Dataobject): Promise<Book> => {
       const book: Book = {
         title: '',
         subtitle: '',
@@ -75,8 +75,9 @@ export default class Booklist extends Vue {
         imageUrl: '',
         infoUrl: '',
       };
-      dataobject.attributeConfiguration.forEach(
-        (attribute: DataobjectAttribute) => {
+
+      const attributes = await dataobject.attributes;
+      attributes.forEach((attribute: DataobjectAttribute) => {
           if (attribute.name == 'publishedDate') {
             book[attribute.name] = new Date(attribute.value);
           } else {
