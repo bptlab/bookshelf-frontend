@@ -4,7 +4,6 @@
         title="Bookwishes"
         description="Missing a book in our library? Use the searchbar below to search for your desired book and request it. You will be notified about the status of your request."
         v-bind:books=books
-        v-bind:actions=bookActions
         v-bind:onSearch=handleSearchEvent />
     </main>
 </template>
@@ -12,14 +11,15 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import SearchableBookgrid from '@/components/SearchableBookgrid.vue';
 import Component from 'vue-class-component';
+import SearchableBookgrid from '@/components/SearchableBookgrid.vue';
 import GoogleApi from '@/apis/GoogleApi';
-import ChimeraApi from '@/apis/ChimeraApi';
-import Volume from '@/interfaces/google/Volume';
+import ChimeraApi from '@/apis/Chimera/ChimeraApi';
 import Book from '@/interfaces/Book';
+import BookAction from '@/interfaces/BookAction';
+import Volume from '@/interfaces/google/Volume';
 import config from '@/config';
-import { relative } from 'path';
+
 
 @Component({
   components: {
@@ -59,8 +59,9 @@ export default class Bookwish extends Vue {
   }
 
   private handleBookwish(book: Book) {
-    console.log(book);
-    ChimeraApi.startInstance(book);
+    ChimeraApi
+    .scenario(config.scenario.id)
+    .startInstance(config.scenario.caseStart, book);
   }
 
   private displayLoadingAnimation() {
@@ -68,16 +69,7 @@ export default class Bookwish extends Vue {
   }
 
   private formatBooks(bookResponse: any): Book[] {
-    const bookActions = [
-      {
-        title: 'View Details',
-        action: (book: Book) => window.open(book.infoUrl, '_blank'),
-      },
-      {
-        title: 'Wish Book',
-        action: (book: Book) => this.handleBookwish(book),
-      },
-    ]
+    const bookActions = this.initializeBookActions();
 
     const books: Book[] = bookResponse.items.map((volume: Volume) => {
       return {
@@ -94,10 +86,24 @@ export default class Bookwish extends Vue {
         imageUrl: volume.volumeInfo.imageLinks ? volume.volumeInfo.imageLinks.thumbnail : '',
         infoUrl: volume.volumeInfo.infoLink ? volume.volumeInfo.infoLink : '',
         actions: bookActions,
-      }
+      };
     });
+
     this.books = books;
     return this.books;
+  }
+
+  private initializeBookActions(): BookAction[] {
+    return [
+      {
+        title: 'View Details',
+        action: (book: Book) => window.open(book.infoUrl, '_blank'),
+      },
+      {
+        title: 'Wish Book',
+        action: (book: Book) => this.handleBookwish(book),
+      },
+    ];
   }
 
   private searchBooks(title: string) {

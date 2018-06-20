@@ -54,6 +54,19 @@ export default class Scenario extends ApiEndpoint {
     return super.update() as Promise<Scenario>;
   }
 
+  public async startInstance(caseStartId: string, event: any): Promise<Response> {
+    const url: string = this.caseStartUrl(caseStartId);
+
+    return fetch(url, {
+      method: 'post',
+      headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(event),
+    });
+  }
+
   public instance(id: string): Instance {
     return new Instance(this.id, id);
   }
@@ -96,6 +109,10 @@ export default class Scenario extends ApiEndpoint {
 
   private createInstances(instanceResponses: InstanceResponse[]): Instance[] {
     return instanceResponses.map(this.createInstance.bind(this));
+  }
+
+  private caseStartUrl(id: string): string {
+    return config.api.chimera.base + 'eventdispatcher/scenario/' + this.id + '/casestart/' + id;
   }
 
   private instancesUrl(): string {
