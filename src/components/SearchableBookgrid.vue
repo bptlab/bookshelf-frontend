@@ -29,7 +29,7 @@
                   <span class="timestamp">
                     <i class="fas fa-book"></i> {{book.pageCount}} pages
                   </span>
-                  <span v-if="book.averageRating" class="comments">
+                  <span v-if="book.averageRating > 0" class="comments">
                      <i class="fas fa-star"></i> {{ book.averageRating }} / 5
                   </span>
                 </div>
