@@ -68,16 +68,7 @@ export default class Bookwish extends Vue {
   }
 
   private formatBooks(bookResponse: any): Book[] {
-    const bookActions = [
-      {
-        title: 'View Details',
-        action: (book: Book) => window.open(book.infoUrl, '_blank'),
-      },
-      {
-        title: 'Wish Book',
-        action: (book: Book) => this.handleBookwish(book),
-      },
-    ]
+    const bookActions = this.initializeBookActions();
 
     const books: Book[] = bookResponse.items.map((volume: Volume) => {
       return {
@@ -98,6 +89,19 @@ export default class Bookwish extends Vue {
     });
     this.books = books;
     return this.books;
+  }
+
+  private initializeBookActions(): BookAction[] {
+    return [
+      {
+        title: 'View Details',
+        action: (book: Book) => window.open(book.infoUrl, '_blank'),
+      },
+      {
+        title: 'Wish Book',
+        action: (book: Book) => this.handleBookwish(book),
+      },
+    ];
   }
 
   private searchBooks(title: string) {
