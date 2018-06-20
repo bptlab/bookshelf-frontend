@@ -11,14 +11,22 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
+import SearchableBookgrid from '@/components/SearchableBookgrid.vue';
+import { map } from 'p-iteration';
 import Fuse from 'fuse.js';
-import ChimeraApi from '@/apis/ChimeraApi';
+import ChimeraApi from '@/apis/Chimera/ChimeraApi';
+import Dataobject from '@/apis/Chimera/Dataobject';
+import Utils from '@/Utils';
 import Book from '@/interfaces/Book';
-import Dataobject from '@/interfaces/chimera/Dataobject';
 import DataobjectAttribute from '@/interfaces/chimera/DataobjectAttribute';
 import config from '@/config';
 
-@Component
+
+@Component({
+  components: {
+    SearchableBookgrid,
+  },
+})
 export default class Booklist extends Vue {
   // region public members
   public displayedBooks: Book[] = [];
