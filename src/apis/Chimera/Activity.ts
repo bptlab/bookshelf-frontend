@@ -4,7 +4,6 @@ import Utils from '@/Utils';
 import config from '@/config';
 import ActivityResponse from '@/interfaces/chimera/ActivityResponse';
 import DataobjectResponse from '@/interfaces/chimera/DataobjectResponse';
-import ActivityOutputResponse from '@/interfaces/chimera/ActivityOutputResponse';
 
 export default class Activity extends ApiEndpoint {
   // region public static methods
@@ -144,7 +143,8 @@ export default class Activity extends ApiEndpoint {
   }
 
   protected url(): string {
-    return config.api.chimera.base + 'interface/v2/scenario/' + this.scenarioId + '/instance/' + this.instanceId + '/activityinstance/' + this.id;
+    return config.api.chimera.base + 'interface/v2/scenario/' + this.scenarioId + '/instance/' + this.instanceId +
+      '/activityinstance/' + this.id;
   }
 
   protected beginUrl(): string {

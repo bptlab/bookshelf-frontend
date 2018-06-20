@@ -137,11 +137,13 @@ export default class Instance extends ApiEndpoint {
   }
 
   protected dataobjectsUrl(): string {
-    return config.api.chimera.base + 'interface/v2/scenario/' + this.scenarioId + '/instance/' + this.id + '/dataobject';
+    return config.api.chimera.base + 'interface/v2/scenario/' + this.scenarioId + '/instance/' + this.id +
+      '/dataobject';
   }
 
   protected activitiesUrl(): string {
-    return config.api.chimera.base + 'interface/v2/scenario/' + this.scenarioId + '/instance/' + this.id + '/activity';
+    return config.api.chimera.base + 'interface/v2/scenario/' + this.scenarioId + '/instance/' + this.id +
+      '/activity';
   }
 
   // endregion

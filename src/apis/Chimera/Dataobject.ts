@@ -97,7 +97,8 @@ export default class Dataobject extends ApiEndpoint {
   }
 
   protected url(): string {
-    return config.api.chimera.base + 'interface/v2/scenario/' + this.scenarioId + '/instance/' + this.instanceId + '/dataobject/' + this.id;
+    return config.api.chimera.base + 'interface/v2/scenario/' + this.scenarioId + '/instance/' + this.instanceId +
+      '/dataobject/' + this.id;
   }
 
   // endregion

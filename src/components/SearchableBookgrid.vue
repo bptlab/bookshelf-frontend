@@ -59,16 +59,16 @@ import { Prop } from 'vue-property-decorator';
 export default class SearchableBookgrid extends Vue {
   // region properties
   @Prop({default: 'Title'})
-  title!: string;
+  public title!: string;
 
   @Prop({default: 'Description text...'})
-  description!: string;
+  public description!: string;
 
   @Prop()
-  books!: Book[];
+  public books!: Book[];
 
   @Prop()
-  onSearch!: (event: any) => any;
+  public onSearch!: (event: any) => any;
   // endregion
 
   // region public members
