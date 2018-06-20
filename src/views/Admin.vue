@@ -61,7 +61,6 @@ export default class Booklist extends Vue {
 
   private async mapDataobjectsToBooks(dataobjects: Dataobject[]): Promise<Book[]> {
     const books = await Promise.all(dataobjects.map( async (dataobject: Dataobject): Promise<Book> => {
-      
       const book: Book = await this.initializeBook(dataobject);
       book.actions = await this.initializeBookActions(dataobject);
       return book;
