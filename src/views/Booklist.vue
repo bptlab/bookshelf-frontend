@@ -1,22 +1,10 @@
 <template>
-  <div class="booklist">
-    <input v-on:keyup="searchBooks" type="text" id="searchbar" class="uk-input" placeholder="Search Books">
-    <table class="uk-table uk-table-divider">
-      <thead>
-        <tr>
-          <th>state</th>
-          <th>isbn</th>
-          <th>title</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="book in displayedBooks" :key="book.id">
-          <td>{{ book.state }}</td>
-          <td>{{ book.isbn }}</td>
-          <td>{{ book.title }}</td>
-        </tr>
-      </tbody>
-    </table>
+  <div class="bookshelf">
+    <SearchableBookgrid 
+        title="Bookshelf"
+        description="Search the BPT Chairs library using this tool. "
+        v-bind:books=displayedBooks
+        v-bind:onSearch=searchBooks />
   </div>
 </template>
 
