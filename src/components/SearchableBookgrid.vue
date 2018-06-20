@@ -33,7 +33,7 @@
                      <i class="fas fa-star"></i> {{ book.averageRating }} / 5
                   </span>
                 </div>
-                <div class="post-actions">
+                <div class="post-actions" v-if="book.actions">
                   <a v-for="(action, index) in book.actions" :key="index" v-on:click="action.action(book)">
                     {{action.title}}
                   </a>
