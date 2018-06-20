@@ -1,36 +1,32 @@
 <template>
-  <div class="booklist">
-    <input v-on:keyup="searchBooks" type="text" id="searchbar" class="uk-input" placeholder="Search Books">
-    <table class="uk-table uk-table-divider">
-      <thead>
-        <tr>
-          <th>state</th>
-          <th>isbn</th>
-          <th>title</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="book in displayedBooks" :key="book.id">
-          <td>{{ book.state }}</td>
-          <td>{{ book.isbn }}</td>
-          <td>{{ book.title }}</td>
-        </tr>
-      </tbody>
-    </table>
+  <div class="bookshelf">
+    <SearchableBookgrid 
+        title="Bookshelf"
+        description="Search the BPT Chairs library using this tool. "
+        v-bind:books=displayedBooks
+        v-bind:onSearch=searchBooks />
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
+import SearchableBookgrid from '@/components/SearchableBookgrid.vue';
+import { map } from 'p-iteration';
 import Fuse from 'fuse.js';
-import ChimeraApi from '@/apis/ChimeraApi';
+import ChimeraApi from '@/apis/Chimera/ChimeraApi';
+import Dataobject from '@/apis/Chimera/Dataobject';
+import Utils from '@/Utils';
 import Book from '@/interfaces/Book';
-import Dataobject from '@/interfaces/chimera/Dataobject';
 import DataobjectAttribute from '@/interfaces/chimera/DataobjectAttribute';
 import config from '@/config';
 
-@Component
+
+@Component({
+  components: {
+    SearchableBookgrid,
+  },
+})
 export default class Booklist extends Vue {
   // region public members
   public displayedBooks: Book[] = [];
@@ -49,35 +45,29 @@ export default class Booklist extends Vue {
 
   // region private methods
   private mounted() {
-    ChimeraApi.getScenarioDataobjects()
+    ChimeraApi
+      .scenario(config.scenario.id)
+      .dataobjects()
+      .then((dataobjects: Dataobject[]) => Utils.filterDataobjectsByState(dataobjects, 'approved'))
       .then(this.mapDataobjectsToBooks)
       .then(this.initializeSearchbar);
   }
 
   private initializeSearchbar() {
-    const searchConfig = { keys: ['state', 'isbn', 'title'] };
+    const searchConfig = { keys: ['authors', 'title'] };
 
     this.displayedBooks = this.books;
     this.fuse = new Fuse(this.books, searchConfig);
   }
 
-  private mapDataobjectsToBooks(dataobjects: Dataobject[]) {
-    this.books = dataobjects.map((dataobject: Dataobject) => {
-      const book: Book = {
-        id: dataobject.id,
-        state: dataobject.state,
-        isbn: '',
-        title: '',
-      };
-
-      dataobject.attributeConfiguration.forEach(
-        (attribute: DataobjectAttribute) => {
-          book[attribute.name] = attribute.value;
-        },
-      );
-
+  private async mapDataobjectsToBooks(dataobjects: Dataobject[]) {
+    const books = await map( dataobjects, async (dataobject: Dataobject): Promise<Book> => {
+      const book: Book = await Utils.initializeBook(dataobject);
       return book;
     });
+
+    this.books = books;
+    return this.books;
   }
 
   private searchBooks(event: any) {
