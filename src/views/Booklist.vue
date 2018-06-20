@@ -45,35 +45,29 @@ export default class Booklist extends Vue {
 
   // region private methods
   private mounted() {
-    ChimeraApi.getScenarioDataobjects()
+    ChimeraApi
+      .scenario(config.scenario.id)
+      .dataobjects()
+      .then((dataobjects: Dataobject[]) => Utils.filterDataobjectsByState(dataobjects, 'approved'))
       .then(this.mapDataobjectsToBooks)
       .then(this.initializeSearchbar);
   }
 
   private initializeSearchbar() {
-    const searchConfig = { keys: ['state', 'isbn', 'title'] };
+    const searchConfig = { keys: ['authors', 'title'] };
 
     this.displayedBooks = this.books;
     this.fuse = new Fuse(this.books, searchConfig);
   }
 
-  private mapDataobjectsToBooks(dataobjects: Dataobject[]) {
-    this.books = dataobjects.map((dataobject: Dataobject) => {
-      const book: Book = {
-        id: dataobject.id,
-        state: dataobject.state,
-        isbn: '',
-        title: '',
-      };
-
-      dataobject.attributeConfiguration.forEach(
-        (attribute: DataobjectAttribute) => {
-          book[attribute.name] = attribute.value;
-        },
-      );
-
+  private async mapDataobjectsToBooks(dataobjects: Dataobject[]) {
+    const books = await map( dataobjects, async (dataobject: Dataobject): Promise<Book> => {
+      const book: Book = await Utils.initializeBook(dataobject);
       return book;
     });
+
+    this.books = books;
+    return this.books;
   }
 
   private searchBooks(event: any) {
