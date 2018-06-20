@@ -17,6 +17,7 @@ import SearchableBookgrid from '@/components/SearchableBookgrid.vue';
 import ChimeraApi from '@/apis/Chimera/ChimeraApi';
 import Dataobject from '@/apis/Chimera/Dataobject';
 import Activity from '@/apis/chimera/Activity';
+import Utils from '@/Utils';
 import Book from '@/interfaces/Book';
 import BookAction from '@/interfaces/BookAction';
 import DataobjectAttribute from '@/interfaces/chimera/DataobjectAttribute';
@@ -48,55 +49,20 @@ export default class Booklist extends Vue {
   private mounted() {
     ChimeraApi.scenario(config.scenario.id)
       .dataobjects()
-      .then(this.filterDataobjects)
+      .then((dataobjects: Dataobject[]) => Utils.filterDataobjectsByState(dataobjects, 'desired'))
       .then(this.mapDataobjectsToBooks)
       .then(this.initializeSearchbar);
   }
 
-  private async filterDataobjects(dataobjects: Dataobject[]): Promise<Dataobject[]> {
-    return await filter(dataobjects, async (dataobject: Dataobject): Promise<boolean> => {
-      return await dataobject.state === 'desired';
-    });
-  }
-
   private async mapDataobjectsToBooks(dataobjects: Dataobject[]): Promise<Book[]> {
-    const books = await Promise.all(dataobjects.map( async (dataobject: Dataobject): Promise<Book> => {
-      const book: Book = await this.initializeBook(dataobject);
+    const books = await map( dataobjects, async (dataobject: Dataobject): Promise<Book> => {
+      const book: Book = await Utils.initializeBook(dataobject);
       book.actions = await this.initializeBookActions(dataobject);
       return book;
-    }));
+    });
 
     this.books = books;
     return this.books;
-  }
-
-  private async initializeBook(dataobject: Dataobject): Promise<Book> {
-    const book: Book = {
-      title: '',
-      subtitle: '',
-      authors: '',
-      publishedDate: new Date(),
-      description: '',
-      pageCount: 0,
-      language: '',
-      printType: '',
-      category: '',
-      averageRating: 0,
-      imageUrl: '',
-      infoUrl: '',
-    };
-
-    const attributes = await dataobject.attributes;
-    attributes.forEach((attribute: DataobjectAttribute) => {
-        if (attribute.name === 'publishedDate') {
-          book[attribute.name] = new Date(attribute.value);
-        } else {
-          book[attribute.name] = attribute.value;
-        }
-      },
-    );
-
-    return book;
   }
 
   private async initializeBookActions(dataobject: Dataobject): Promise<BookAction[]> {
