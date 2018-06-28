@@ -8,10 +8,15 @@
       <input v-on:keyup="handleSearchEvent" type="text" id="searchbar" class="uk-input uk-margin-large-bottom" placeholder="Search Books">
       <div class="uk-child-width-1-3@s uk-grid-match uk-grid">
 
-        <div v-for="book in books" :key="book.id">
+        <div v-for="book in displayedBooks" :key="book.id">
           <div class="column uk-margin-medium-bottom">
             <!-- Post-->
-            <div class="post-module">
+            <div v-bind:class="{ 'post-module': true, 'disabled': book.disabled }">
+              <div v-bind:class="{ 'overlay-text': true, 'visible': book.disabled }">
+                <div>
+                  Book Disabled
+                </div>
+              </div>
               <!-- Thumbnail-->
               <div class="thumbnail">
                 <div class="date">
@@ -34,7 +39,7 @@
                   </span>
                 </div>
                 <div class="post-actions" v-if="book.actions">
-                  <a v-for="(action, index) in book.actions" :key="index" v-on:click="action.action(book)">
+                  <a v-for="(action, index) in book.actions" :key="index" v-on:click="handleBookAction(book, action)">
                     {{action.title}}
                   </a>
                 </div>
@@ -53,7 +58,8 @@
 import Vue from 'vue';
 import Book from '@/interfaces/Book';
 import Component from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import { Prop, Watch } from 'vue-property-decorator';
+import BookAction from '@/interfaces/BookAction';
 
 @Component
 export default class SearchableBookgrid extends Vue {
@@ -72,6 +78,7 @@ export default class SearchableBookgrid extends Vue {
   // endregion
 
   // region public members
+  public displayedBooks: Book[] = [];
   // endregion
 
   // region public methods
@@ -84,6 +91,17 @@ export default class SearchableBookgrid extends Vue {
   // endregion
 
   // region private methods
+  private handleBookAction(book: Book, action: BookAction) {
+    const index = this.displayedBooks.indexOf(book);
+    const updatedBook = book;
+    updatedBook.disabled = true;
+
+    if (action.disableBook) {
+      this.displayedBooks.splice(index, 1, updatedBook);
+    }
+    action.action(book);
+  }
+
   private handleSearchEvent(event: any) {
     this.onSearch(event);
   }
