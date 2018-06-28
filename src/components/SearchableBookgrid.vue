@@ -186,6 +186,27 @@ export default class SearchableBookgrid extends Vue {
     .font-smoothing;
   }
 
+  .visible {
+    visibility: visible !important;
+  }
+
+  .post-module:before {
+    content: "";
+    position: absolute;
+    background: #E34E47;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 100%;
+    z-index: 2; 
+    opacity: 0.9;
+    transition: top 0.09s ease-in;
+  }
+
+  .post-module.disabled:before {
+    top: 0;
+  }
+
   .post-module {
     position: relative;
     z-index: 1;
@@ -195,7 +216,7 @@ export default class SearchableBookgrid extends Vue {
     height: 470px;
     .box-shadow;
     .transitions;
-    &:hover {
+    &:hover, &.disabled {
       .box-shadow(@blur: 35px; @color: fade(@black, 30%););
       .thumbnail {
         img {
@@ -211,6 +232,18 @@ export default class SearchableBookgrid extends Vue {
         margin: 20px 0px;
         visibility: visible;
       }
+    }
+    .overlay-text {
+      position: absolute;
+      display: flex;
+      width: 100%;
+      height: 100%;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 40px;
+      z-index: 2;
+      visibility: hidden;
     }
     .thumbnail {
       background: @black;
