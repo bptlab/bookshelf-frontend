@@ -2,7 +2,7 @@
   <div class="bookshelf">
     <SearchableBookgrid 
         title="Bookshelf"
-        description="Search the BPT Chairs library using this tool. "
+        description="Search the BPT Chair's library using this tool. "
         v-bind:books=displayedBooks
         v-bind:onSearch=searchBooks />
   </div>
