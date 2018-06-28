@@ -29,11 +29,11 @@
                   <span class="timestamp">
                     <i class="fas fa-book"></i> {{book.pageCount}} pages
                   </span>
-                  <span v-if="book.averageRating" class="comments">
+                  <span v-if="book.averageRating > 0" class="comments">
                      <i class="fas fa-star"></i> {{ book.averageRating }} / 5
                   </span>
                 </div>
-                <div class="post-actions">
+                <div class="post-actions" v-if="book.actions">
                   <a v-for="(action, index) in book.actions" :key="index" v-on:click="action.action(book)">
                     {{action.title}}
                   </a>
@@ -59,16 +59,16 @@ import { Prop } from 'vue-property-decorator';
 export default class SearchableBookgrid extends Vue {
   // region properties
   @Prop({default: 'Title'})
-  title!: string;
+  public title!: string;
 
   @Prop({default: 'Description text...'})
-  description!: string;
+  public description!: string;
 
   @Prop()
-  books!: Book[];
+  public books!: Book[];
 
   @Prop()
-  onSearch!: (event: any) => any;
+  public onSearch!: (event: any) => any;
   // endregion
 
   // region public members
