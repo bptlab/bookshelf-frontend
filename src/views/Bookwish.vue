@@ -98,10 +98,12 @@ export default class Bookwish extends Vue {
       {
         title: 'View Details',
         action: (book: Book) => window.open(book.infoUrl, '_blank'),
+        disableBook: false,
       },
       {
         title: 'Wish Book',
         action: (book: Book) => this.handleBookwish(book),
+        disableBook: true,
       },
     ];
   }

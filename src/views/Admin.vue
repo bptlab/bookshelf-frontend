@@ -72,6 +72,7 @@ export default class Booklist extends Vue {
       return {
         title: await activity.label,
         action: () => { activity.complete([ dataobject ]); },
+        disableBook: true,
       };
     });
   }
