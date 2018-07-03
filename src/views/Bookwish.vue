@@ -73,6 +73,8 @@ export default class Bookwish extends Vue {
 
     const books: Book[] = bookResponse.items.map((volume: Volume) => {
       return {
+        nfcid: '',
+        isbn: (volume.id + volume.etag).replace(/[^a-zA-Z0-9]/g, ""),
         title: volume.volumeInfo.title ? volume.volumeInfo.title : '',
         subtitle: volume.volumeInfo.subtitle ? volume.volumeInfo.subtitle : '',
         authors: volume.volumeInfo.authors ? volume.volumeInfo.authors.join(', ') : '',
