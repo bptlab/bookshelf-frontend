@@ -111,13 +111,27 @@ export default class Activity extends ApiEndpoint {
   }
 
   public async complete(dataobjects?: Dataobject[]) {
-    await this.begin(dataobjects);
+    if (dataobjects) {
+      await this.begin(dataobjects);
+    } else {
+      await this.begin();
+    }
     const output = await this.output();
     const dataStateMapping: any = {};
     Object.keys(output).forEach((key: string) => {
       dataStateMapping[key] = output[key]!.states[0];
     });
     await this.terminate(dataStateMapping, {});
+  }
+
+  public async completeWithoutInput(dataAttributeMapping: any) {
+    await this.begin();
+    const output = await this.output();
+    const dataStateMapping: any = {};
+    Object.keys(output).forEach((key: string) => {
+      dataStateMapping[key] = output[key]!.states[0];
+    });
+    await this.terminate(dataStateMapping, dataAttributeMapping);
   }
 
   // endregion

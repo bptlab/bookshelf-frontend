@@ -4,6 +4,7 @@ import Booklist from './views/Booklist.vue';
 import Bookwish from './views/Bookwish.vue';
 import Login from './views/Login.vue';
 import Admin from '@/views/Admin.vue';
+import User from '@/views/User.vue';
 import Authentification from '@/apis/Authentification';
 
 Vue.use(Router);
@@ -23,6 +24,11 @@ export default new Router({
     {
       path: '/admin',
       component: Admin,
+      beforeEnter: requireAuth,
+    },
+    {
+      path: '/add-user',
+      component: User,
       beforeEnter: requireAuth,
     },
     {
