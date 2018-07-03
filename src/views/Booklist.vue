@@ -48,7 +48,7 @@ export default class Booklist extends Vue {
     ChimeraApi
       .scenario(config.scenario.id)
       .dataobjects()
-      .then((dataobjects: Dataobject[]) => Utils.filterDataobjectsByState(dataobjects, 'approved'))
+      .then((dataobjects: Dataobject[]) => Utils.filterDataobjectsByState(dataobjects, ['in stock', 'rented']))
       .then(this.mapDataobjectsToBooks)
       .then(this.initializeSearchbar);
   }
