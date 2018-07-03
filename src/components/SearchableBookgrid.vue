@@ -32,6 +32,9 @@
                   <span v-if="book.averageRating > 0" class="comments">
                      <i class="fas fa-star"></i> {{ book.averageRating }} / 5
                   </span>
+                  <span v-if="book.state === 'rented'" class="comments">
+                     <i class="fas fa-sign-out-alt"></i> Rented
+                  </span>
                 </div>
                 <div class="post-actions" v-if="book.actions">
                   <a v-for="(action, index) in book.actions" :key="index" v-on:click="action.action(book)">
