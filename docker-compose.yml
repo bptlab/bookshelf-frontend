@@ -1,0 +1,8 @@
+version: '3'
+services:
+    bookshelf-frontend:
+        image: bptlab/bookshelf-frontend:latest
+        ports:
+            - 3000:8080
+        env_file:
+            - api.env
