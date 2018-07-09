@@ -49,7 +49,8 @@ export default class Booklist extends Vue {
   private mounted() {
     ChimeraApi.scenario(config.scenario.id)
       .dataobjects()
-      .then((dataobjects: Dataobject[]) => Utils.filterDataobjectsByState(dataobjects, 'desired'))
+      .then((dataobjects: Dataobject[]) => Utils.filterDataobjectsByNotState(dataobjects, 'sorted out'))
+      .then((dataobjects: Dataobject[]) => Utils.filterDataobjectsByDataclass(dataobjects, 'Book'))
       .then(this.mapDataobjectsToBooks)
       .then(this.initializeSearchbar);
   }
@@ -71,7 +72,10 @@ export default class Booklist extends Vue {
     return await map(activities, async (activity: Activity): Promise<BookAction> => {
       return {
         title: await activity.label,
-        action: () => { activity.complete([ dataobject ]); },
+        action: async () => {
+          await activity.complete([ dataobject ]);
+          location.reload();
+        },
       };
     });
   }
@@ -83,7 +87,7 @@ export default class Booklist extends Vue {
       .activities();
 
     return await filter(activities, async (activity: Activity): Promise<boolean> => {
-      return await activity.state === 'READY';
+      return await activity.state === 'READY' && await activity.label !== 'Receive gifted Book' && await activity.label !== 'Fill User data';
     });
   }
 

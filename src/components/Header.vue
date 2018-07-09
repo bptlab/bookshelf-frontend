@@ -19,6 +19,9 @@
                             <router-link v-if="loggedIn" to="/admin">Admin</router-link>
                         </li>
                         <li>
+                            <router-link v-if="loggedIn" to="/add-user">Add User</router-link>
+                        </li>
+                        <li>
                             <router-link v-if="loggedIn" to="/logout">Log out</router-link>
                             <router-link v-if="!loggedIn" to="/login">Log in</router-link>
                         </li>

@@ -19,6 +19,8 @@ export default class Utils {
 
     public static async initializeBook(dataobject: Dataobject): Promise<Book> {
         const book: Book = {
+            state: await dataobject.state,
+            ISBN: '',
             title: '',
             subtitle: '',
             authors: '',
@@ -46,9 +48,22 @@ export default class Utils {
         return book;
     }
 
-    public static async filterDataobjectsByState(dataobjects: Dataobject[], state: string): Promise<Dataobject[]> {
+    // TODO: Function should take a list
+    public static async filterDataobjectsByState(dataobjects: Dataobject[], states: string[]): Promise<Dataobject[]> {
         return await filter(dataobjects, async (dataobject: Dataobject): Promise<boolean> => {
-            return await dataobject.state === state;
+            return states.indexOf(await dataobject.state) > -1;
+        });
+    }
+
+    public static async filterDataobjectsByNotState(dataobjects: Dataobject[], state: string): Promise<Dataobject[]> {
+        return await filter(dataobjects, async (dataobject: Dataobject): Promise<boolean> => {
+            return await dataobject.state !== state;
+        });
+    }
+
+    public static async filterDataobjectsByDataclass(dataobjects: Dataobject[], dataclass: string): Promise<Dataobject[]> {
+        return await filter(dataobjects, async (dataobject: Dataobject): Promise<boolean> => {
+            return await dataobject.dataclass === dataclass;
         });
     }
 }
